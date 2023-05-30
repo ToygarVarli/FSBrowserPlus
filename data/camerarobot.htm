@@ -18,48 +18,84 @@
             font-family: Arial, Helvetica, sans-serif;
             font-size: 12px;
         }
+
         .column {
-            float: left;
-            width: 33.33%;
+  
+            flex: 1;
+  padding: 16px;
         }
 
         /* Clear floats after the columns */
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
+        .row {
+            display: flex;
+            /* Make the container element behave like a table */
+            width: 100%;
+        }
+
+        .button-right {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            height: 50px;
+            bottom: 90px!important;
+            position: absolute;
+            right: 10px;
+        }
+        .button-left {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            height: 50px;
+            bottom: 90px!important;
+            position: absolute;
+            left: 10px;
         }
     </style>
 </head>
 
 <body>
-    <section class="main">
 
-        <div class="row">
-            <div class="column">
-                <label for="led">LED</label>
-                
-                    <input id="led" type="checkbox" class="led-action">
-                    <label class="slider" for="led"></label>
-              
-            </div>
-            <div class="column">
-                
-                    <img id="stream" src="">
-               
-            </div>
-            <div class="column"> <canvas id='touchcanvas' width='255' height='255'></canvas></div>
+    <div class="row">
+        <div class="column">
+            <label for="led">LED</label>
+
+            <input id="led" type="checkbox" class="led-action">
+            <label class="slider" for="led"></label>
+
         </div>
+        <div class="column">
 
+            <img id="stream" src="">
 
-        <div>
-            <p>Output: <span id="output"></span></p>
         </div>
-    </section>
+        <div class="column" style="display:flex!important">
+            <button class="button-left"><</button>
+            <button class="button-right">></button>
+        </div>
+    </div>
+
+
+    <div>
+        <p>Output: <span id="output"></span></p>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function (event) {
-            var baseHost = document.location.origin;
+            var baseHost = "http://xiaonanotank.local";// document.location.origin;
 
             const hide = el => {
                 el.classList.add('hidden');
@@ -158,36 +194,36 @@
                 });
 
             const view = document.getElementById('stream');
-            const viewContainer = document.getElementById('stream-container');
-            const stillButton = document.getElementById('get-still');
-            const streamButton = document.getElementById('toggle-stream');
+            //const viewContainer = document.getElementById('-contstreamainer');
+            //const stillButton = document.getElementById('get-still');
+            //const streamButton = document.getElementById('toggle-stream');
 
             const stopStream = () => {
                 window.stop();
-                streamButton.innerHTML = 'Start Stream';
+                //streamButton.innerHTML = 'Start Stream';
             };
 
             const startStream = () => {
                 view.src = `${baseHost}:81/stream`;
-                show(viewContainer);
-                streamButton.innerHTML = 'Stop Stream';
+                //show(viewContainer);
+                //streamButton.innerHTML = 'Stop Stream';
             };
 
             // Attach actions to buttons
-            stillButton.onclick = () => {
-                stopStream();
-                view.src = `${baseHost}/snap?${Date.now()}`;
-                show(viewContainer);
-            };
+            /* stillButton.onclick = () => {
+                 stopStream();
+                 view.src = `${baseHost}/snap?${Date.now()}`;
+                 show(viewContainer);
+             };*/
 
-            streamButton.onclick = () => {
+            /*streamButton.onclick = () => {
                 const streamEnabled = streamButton.innerHTML === 'Stop Stream';
                 if (streamEnabled) {
                     stopStream();
                 } else {
                     startStream();
                 }
-            };
+            };*/
 
             document
                 .querySelectorAll('.led-action')
@@ -204,42 +240,42 @@
 
             // Custom actions
             // Gain
-            const agc = document.getElementById('agc');
-            const agcGain = document.getElementById('agc_gain-group');
-            const gainCeiling = document.getElementById('gainceiling-group');
-            agc.onchange = () => {
-                updateConfig(agc);
-                if (agc.checked) {
-                    show(gainCeiling);
-                    hide(agcGain);
-                } else {
-                    hide(gainCeiling);
-                    show(agcGain);
-                }
-            };
-
-            // Exposure
-            const aec = document.getElementById('aec');
-            const exposure = document.getElementById('aec_value-group');
-            aec.onchange = () => {
-                updateConfig(aec);
-                aec.checked ? hide(exposure) : show(exposure);
-            };
-
-            // AWB
-            const awb = document.getElementById('awb_gain');
-            const wb = document.getElementById('wb_mode-group');
-            awb.onchange = () => {
-                updateConfig(awb);
-                awb.checked ? show(wb) : hide(wb);
-            };
-
-            // framesize
-            const framesize = document.getElementById('framesize');
-
-            framesize.onchange = () => {
-                updateConfig(framesize);
-            };
+            /* const agc = document.getElementById('agc');
+             const agcGain = document.getElementById('agc_gain-group');
+             const gainCeiling = document.getElementById('gainceiling-group');
+             agc.onchange = () => {
+                 updateConfig(agc);
+                 if (agc.checked) {
+                     show(gainCeiling);
+                     hide(agcGain);
+                 } else {
+                     hide(gainCeiling);
+                     show(agcGain);
+                 }
+             };
+ 
+             // Exposure
+             const aec = document.getElementById('aec');
+             const exposure = document.getElementById('aec_value-group');
+             aec.onchange = () => {
+                 updateConfig(aec);
+                 aec.checked ? hide(exposure) : show(exposure);
+             };
+ 
+             // AWB
+             const awb = document.getElementById('awb_gain');
+             const wb = document.getElementById('wb_mode-group');
+             awb.onchange = () => {
+                 updateConfig(awb);
+                 awb.checked ? show(wb) : hide(wb);
+             };
+ 
+             // framesize
+             const framesize = document.getElementById('framesize');
+ 
+             framesize.onchange = () => {
+                 updateConfig(framesize);
+             };*/
 
             // Touch Remote
             let ws = undefined;
@@ -248,7 +284,7 @@
             let mouseDowned = false;
             let la = 0, lb = 0, ra = 0, rb = 0;
 
-            let cv = document.getElementById('touchcanvas');
+            /*let cv = document.getElementById('touchcanvas');
             let ctx = cv.getContext('2d');
             let ctop = cv.offsetTop;
             let cleft = cv.offsetLeft;
@@ -257,13 +293,13 @@
             img.onload = function () {
                 clearCanvas();
             }
-            img.src = "arrows.svg";
+            img.src = "arrows.svg";*/
 
             function clearCanvas() {
-                ctx.fillStyle = '#fff';
+                /*ctx.fillStyle = '#fff';
                 ctx.rect(0, 0, 255, 255);
                 ctx.fill();
-                ctx.drawImage(img, 0, 0);
+                ctx.drawImage(img, 0, 0);*/
             }
 
             function sendMessage(outgoingMessage) {
@@ -320,11 +356,11 @@
                 rb = '0' + rb.toString(16);
                 sendMotor();
 
-                ctx.beginPath();
+                /*ctx.beginPath();
                 ctx.fillStyle = 'rgba(255,48,52,0.5)';
                 ctx.arc(x, y, 10, 0, Math.PI * 2, true);
                 ctx.fill();
-                ctx.closePath();
+                ctx.closePath();*/
             }
 
             function move(e) {
@@ -357,26 +393,26 @@
                 e.preventDefault();
             };
 
-            cv.ontouchstart = touch;
-            cv.ontouchmove = touch;
-            cv.ontouchend = function (e) {
-                clearCanvas();
-                touch(e);
-            };
-            cv.onmousedown = function (e) {
-                mouseDowned = true;
-                move(e);
-            };
-            cv.onmousemove = function (e) {
-                if (mouseDowned) {
-                    move(e);
-                }
-            };
-            cv.onmouseup = function (e) {
-                mouseDowned = false;
-                updateMotor(128, 128);
-                clearCanvas();
-            };
+            /* cv.ontouchstart = touch;
+             cv.ontouchmove = touch;
+             cv.ontouchend = function (e) {
+                 clearCanvas();
+                 touch(e);
+             };
+             cv.onmousedown = function (e) {
+                 mouseDowned = true;
+                 move(e);
+             };
+             cv.onmousemove = function (e) {
+                 if (mouseDowned) {
+                     move(e);
+                 }
+             };
+             cv.onmouseup = function (e) {
+                 mouseDowned = false;
+                 updateMotor(128, 128);
+                 clearCanvas();
+             };*/
 
             ws = nws();
 
