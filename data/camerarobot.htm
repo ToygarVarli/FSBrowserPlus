@@ -19,19 +19,6 @@
             font-size: 12px;
         }
 
-        .column {
-  
-            flex: 1;
-  padding: 16px;
-        }
-
-        /* Clear floats after the columns */
-        .row {
-            display: flex;
-            /* Make the container element behave like a table */
-            width: 100%;
-        }
-
         .button-right {
             background-color: #4CAF50;
             border: none;
@@ -44,10 +31,22 @@
             margin: 4px 2px;
             cursor: pointer;
             height: 50px;
-            bottom: 90px!important;
-            position: absolute;
             right: 10px;
+
         }
+
+        .button-right:active {
+            background-color: coral;
+        }
+
+
+
+        .right-span {
+            display: inline-block;
+            transform: rotate(-90deg);
+        }
+
+
         .button-left {
             background-color: #4CAF50;
             border: none;
@@ -60,38 +59,124 @@
             margin: 4px 2px;
             cursor: pointer;
             height: 50px;
-            bottom: 90px!important;
-            position: absolute;
-            left: 10px;
+            right: 100px;
+        }
+
+        .button-left:active {
+            background-color: coral;
+        }
+
+        .left-span {
+            display: inline-block;
+            transform: rotate(-270deg);
+        }
+
+        .button-fwd {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            height: 50px;
+        }
+
+        .button-fwd:active {
+            background-color: coral;
+        }
+
+        .fwd-span {
+            display: inline-block;
+            transform: rotate(-180deg);
+        }
+
+        .button-bwd {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            height: 50px;
+        }
+
+        .button-bwd:active {
+            background-color: coral;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            height: 50px;
+            width: 70px;
+        }
+
+        .led-on {
+            background-color: royalblue !important;
+        }
+
+        .led-off {
+            background-color: orange !important;
+        }
+
+        td {
+            vertical-align: bottom;
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
+    <input type="hidden" id="ledValue" value="0" />
+    <table>
 
-    <div class="row">
-        <div class="column">
-            <label for="led">LED</label>
+        <tr>
+            <td style="width: 20%;">
+                <button class="button led-off" id="led">LED</button>
+                <button class="button .allwheeldrive">AWD</button>
+                <button class="button .rearwheeldrive">RWD</button>
+                <button class="button .frontwheeldrive">FWD</button>
+                <hr>
+                <button class="button-fwd fwd-span"><span>V</span></button>
+                <button class="button-bwd "><span>V</span></button>
+            </td>
+            <td style="width: 50%;">
+                <img id="stream" src="">
+            </td>
+            <td style="width: 20%;">
+                <button class="button-left left-span"><span>V</span>
+                </button>
+                <button class="button-right right-span"><span>V</span></button>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 20%;"></td>
+            <td style="width: 50%;">
+                <button class="button fwd-span"><span>V</span></button>
+                <button class="button"><span>V</span></button>
+                <button class="button left-span"><span>V</span></button>
+                <button class="button right-span"><span>V</span></button>
+            </td>
+            <td style="width: 20%;"></td>
+        </tr>
 
-            <input id="led" type="checkbox" class="led-action">
-            <label class="slider" for="led"></label>
-
-        </div>
-        <div class="column">
-
-            <img id="stream" src="">
-
-        </div>
-        <div class="column" style="display:flex!important">
-            <button class="button-left"><</button>
-            <button class="button-right">></button>
-        </div>
-    </div>
-
-
-    <div>
-        <p>Output: <span id="output"></span></p>
-    </div>
+    </table>
 
     <script>
         document.addEventListener('DOMContentLoaded', function (event) {
@@ -146,7 +231,22 @@
             };
 
             function updateLed(el) {
-                let value = el.checked ? 1 : 0;
+                let value = document.querySelector("#ledValue").value;
+                var element = document.querySelector("#led");
+                console.log(value)
+                if (value == 1) {
+                    document.querySelector("#ledValue").value = 0;
+                    element.classList.remove('led-on');
+                    element.classList.add('led-off');
+                    value = 0;
+                }
+                else {
+                    document.querySelector("#ledValue").value = 1;
+                    element.classList.remove('led-off');
+                    element.classList.add('led-on');
+                    value = 1;
+                }
+
                 const query = `${baseHost}/gpio?pin=4&val=${value}`;
                 fetch(query)
                     .then(response => {
@@ -194,9 +294,6 @@
                 });
 
             const view = document.getElementById('stream');
-            //const viewContainer = document.getElementById('-contstreamainer');
-            //const stillButton = document.getElementById('get-still');
-            //const streamButton = document.getElementById('toggle-stream');
 
             const stopStream = () => {
                 window.stop();
@@ -209,27 +306,10 @@
                 //streamButton.innerHTML = 'Stop Stream';
             };
 
-            // Attach actions to buttons
-            /* stillButton.onclick = () => {
-                 stopStream();
-                 view.src = `${baseHost}/snap?${Date.now()}`;
-                 show(viewContainer);
-             };*/
 
-            /*streamButton.onclick = () => {
-                const streamEnabled = streamButton.innerHTML === 'Stop Stream';
-                if (streamEnabled) {
-                    stopStream();
-                } else {
-                    startStream();
-                }
-            };*/
 
-            document
-                .querySelectorAll('.led-action')
-                .forEach(el => {
-                    el.onchange = () => updateLed(el);
-                });
+            document.querySelector('#led').onclick = () => updateLed();
+
 
             // Attach default on change action
             document
@@ -238,44 +318,6 @@
                     el.onchange = () => updateConfig(el);
                 });
 
-            // Custom actions
-            // Gain
-            /* const agc = document.getElementById('agc');
-             const agcGain = document.getElementById('agc_gain-group');
-             const gainCeiling = document.getElementById('gainceiling-group');
-             agc.onchange = () => {
-                 updateConfig(agc);
-                 if (agc.checked) {
-                     show(gainCeiling);
-                     hide(agcGain);
-                 } else {
-                     hide(gainCeiling);
-                     show(agcGain);
-                 }
-             };
- 
-             // Exposure
-             const aec = document.getElementById('aec');
-             const exposure = document.getElementById('aec_value-group');
-             aec.onchange = () => {
-                 updateConfig(aec);
-                 aec.checked ? hide(exposure) : show(exposure);
-             };
- 
-             // AWB
-             const awb = document.getElementById('awb_gain');
-             const wb = document.getElementById('wb_mode-group');
-             awb.onchange = () => {
-                 updateConfig(awb);
-                 awb.checked ? show(wb) : hide(wb);
-             };
- 
-             // framesize
-             const framesize = document.getElementById('framesize');
- 
-             framesize.onchange = () => {
-                 updateConfig(framesize);
-             };*/
 
             // Touch Remote
             let ws = undefined;
@@ -284,23 +326,9 @@
             let mouseDowned = false;
             let la = 0, lb = 0, ra = 0, rb = 0;
 
-            /*let cv = document.getElementById('touchcanvas');
-            let ctx = cv.getContext('2d');
-            let ctop = cv.offsetTop;
-            let cleft = cv.offsetLeft;
 
-            var img = new Image();
-            img.onload = function () {
-                clearCanvas();
-            }
-            img.src = "arrows.svg";*/
 
-            function clearCanvas() {
-                /*ctx.fillStyle = '#fff';
-                ctx.rect(0, 0, 255, 255);
-                ctx.fill();
-                ctx.drawImage(img, 0, 0);*/
-            }
+
 
             function sendMessage(outgoingMessage) {
                 if ((!ws) || (ws.readyState === ws.CLOSED)) { ws = nws(); }
@@ -355,12 +383,6 @@
                 ra = '0' + ra.toString(16);
                 rb = '0' + rb.toString(16);
                 sendMotor();
-
-                /*ctx.beginPath();
-                ctx.fillStyle = 'rgba(255,48,52,0.5)';
-                ctx.arc(x, y, 10, 0, Math.PI * 2, true);
-                ctx.fill();
-                ctx.closePath();*/
             }
 
             function move(e) {
@@ -392,32 +414,7 @@
             document.ontouchmove = function (e) {
                 e.preventDefault();
             };
-
-            /* cv.ontouchstart = touch;
-             cv.ontouchmove = touch;
-             cv.ontouchend = function (e) {
-                 clearCanvas();
-                 touch(e);
-             };
-             cv.onmousedown = function (e) {
-                 mouseDowned = true;
-                 move(e);
-             };
-             cv.onmousemove = function (e) {
-                 if (mouseDowned) {
-                     move(e);
-                 }
-             };
-             cv.onmouseup = function (e) {
-                 mouseDowned = false;
-                 updateMotor(128, 128);
-                 clearCanvas();
-             };*/
-
             ws = nws();
-
-            clearCanvas();
-
             startStream();
         });
     </script>
