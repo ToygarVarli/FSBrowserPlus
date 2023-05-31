@@ -127,6 +127,22 @@
             width: 70px;
         }
 
+        #camUp:active {
+            background-color: coral;
+        }
+
+        #camDown:active {
+            background-color: coral;
+        }
+
+        #camLeft:active {
+            background-color: coral;
+        }
+
+        #camRight:active {
+            background-color: coral;
+        }
+
         .led-on {
             background-color: royalblue !important;
         }
@@ -145,7 +161,7 @@
 <body>
     <input type="hidden" id="ledValue" value="0" />
     <table>
-
+<label id="output"></label>
         <tr>
             <td style="width: 20%;">
                 <button class="button led-off" id="led">LED</button>
@@ -153,25 +169,27 @@
                 <button class="button .rearwheeldrive">RWD</button>
                 <button class="button .frontwheeldrive">FWD</button>
                 <hr>
-                <button class="button-fwd fwd-span"><span>V</span></button>
-                <button class="button-bwd "><span>V</span></button>
+                <button id="carF" class="button-fwd fwd-span"><span>V</span></button>
+                <button id="carB" class="button-bwd "><span>V</span></button>
             </td>
             <td style="width: 50%;">
                 <img id="stream" src="">
             </td>
             <td style="width: 20%;">
-                <button class="button-left left-span"><span>V</span>
+                <button id="carL" class="button-left left-span"><span>V</span>
                 </button>
-                <button class="button-right right-span"><span>V</span></button>
+                <button id="carR" class="button-right right-span"><span>V</span></button>
             </td>
         </tr>
+
+
         <tr>
             <td style="width: 20%;"></td>
             <td style="width: 50%;">
-                <button class="button fwd-span"><span>V</span></button>
-                <button class="button"><span>V</span></button>
-                <button class="button left-span"><span>V</span></button>
-                <button class="button right-span"><span>V</span></button>
+                <button id="camUp" class="button fwd-span"><span>V</span></button>
+                <button id="camDown" class="button"><span>V</span></button>
+                <button id="camLeft" class="button left-span"><span>V</span></button>
+                <button id="camRight" class="button right-span"><span>V</span></button>
             </td>
             <td style="width: 20%;"></td>
         </tr>
@@ -311,7 +329,19 @@
             document.querySelector('#led').onclick = () => updateLed();
 
 
-            // Attach default on change action
+            document.querySelector('#camUp').onclick = () => changeCamPosition("UP");
+            document.querySelector('#camDown').onclick = () => changeCamPosition("DOWN");
+            document.querySelector('#camLeft').onclick = () => changeCamPosition("LEFT");
+            document.querySelector('#camRight').onclick = () => changeCamPosition("RIGHT");
+
+
+            document.querySelector('#carF').onclick = () => moveCarFB("F");
+            document.querySelector('#carB').onclick = () => moveCarFB("B");
+            document.querySelector('#carL').onclick = () => moveCarRL("L");
+            document.querySelector('#carR').onclick = () => moveCarRL("R");
+
+
+
             document
                 .querySelectorAll('.default-action')
                 .forEach(el => {
@@ -325,6 +355,20 @@
             let hasPendingMsg = false;
             let mouseDowned = false;
             let la = 0, lb = 0, ra = 0, rb = 0;
+
+
+            function changeCamPosition(direction) {
+                sendMessage('CAMPOS:' + direction);
+            }
+
+            function moveCarFB(direction) {
+                sendMessage('CARMOVE' + direction);
+                console.log(direction);
+            }
+
+            function moveCarRL(direction) {
+                sendMessage('CARDIR' + direction);
+            }
 
 
 
@@ -400,7 +444,7 @@
             }
 
             function nws() {
-                let ws = new WebSocket('ws://' + location.hostname + '/ws', ['arduino']);
+                let ws = new WebSocket('ws://xiaonanotank.local/ws', ['arduino']);
                 ws.onmessage = function (e) {
                     isSending = false;
                     if (hasPendingMsg) {
